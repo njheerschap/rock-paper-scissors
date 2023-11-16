@@ -1,60 +1,102 @@
 function game() {
+    let countWin = 0;
+    
     function getComputerChoice() {
-        const randomNumber = Math.random()
+        const randomNumber = Math.random();
         if (randomNumber <= (1/3)) {
-            return "rock"
+            return "rock";
         } else if (randomNumber > (2/3)) {
-            return "paper"
+            return "paper";
         } else {
-            return "scissors"
+            return "scissors";
         }
     }
     
-    function playerSelection() {
-        return prompt("Rock, Paper, or Scissors?").toLowerCase()
-    }
-    
+
     function playRound(playerSelection, computerSelection ) {
-        console.log(playerSelection)
-        console.log(computerSelection)
         if (playerSelection === "rock") {
             if (computerSelection === "scissors") {
-                return "You win! Rock smashes Scissors"
+                countWin++;
+                return {result: "You win! Rock smashes Scissors", player: playerSelection, computer: computerSelection};
             } else if (computerSelection === "paper") {
-                return "You lose! Paper covers Rock"
+                return {result: "You lose! Paper covers Rock", player: playerSelection, computer: computerSelection};
             } else {
-                return "Tie!"
+                return {result: "Tie", player: playerSelection, computer: computerSelection};
             }
         } else if (playerSelection === "paper") {
             if (computerSelection === "scissors") {
-                return "You lose! Scissors cut Paper"
+                return {result: "You lose! Scissore cut Paper", player: playerSelection, computer: computerSelection};
             } else if (computerSelection === "paper") {
-                return "Tie!"
+                return {result: "Tie", player: playerSelection, computer: computerSelection};
             } else {
-                return "You Win! Paper covers Rock"
+                countWin++;
+                return {result: "You win! Paper covers Rock", player: playerSelection, computer: computerSelection};
             }
         } else if (playerSelection === "scissors") {
             if (computerSelection === "scissors") {
-                return "Tie!"
+                return {result: "Tie", player: playerSelection, computer: computerSelection};
             } else if (computerSelection === "paper") {
-                return "You win! Scissors cut Paper"
+                countWin++;
+                return {result: "You win! Scissors cut Paper", player: playerSelection, computer: computerSelection};
             } else {
-                return "You lose! Rock smashes Scissors"
+                return {result: "You lose! Rock smashes Scissors", player: playerSelection, computer: computerSelection};
+
             }
         } else {
-            return "Not a valid entry"
+            return "Not a valid entry";
         }
-        
     }
-    
-    console.log(playRound(playerSelection(), getComputerChoice()))
+
+    function alertWinner(winTotal, results) {
+        if (winTotal >= 5) {
+            results.innerHTML += `<h1>You Won!!!</h1>`;
+            countWin = 0;
+        }
+    }
+
+
+    function displayResults(result, player, computer, wins) {
+        const body = document.querySelector('body'); 
+        const results = document.createElement('div')
+        results.innerText = `
+                                Player: ${player}
+                                Computer: ${computer}
+                                Result: ${result}
+                                Win Total: ${wins}`
+        body.appendChild(results)
+        alertWinner(wins, results)
+    }
+
+
+    addEventListener('click', (e) => {
+        const div = document.querySelector('div')
+        function removeDiv() {
+            if (div) {
+                div.remove();
+            }
+        }
+        switch (e.target.id) {
+            case 'rock':
+                const rockRound = playRound('rock', getComputerChoice());
+                displayResults(rockRound.result, rockRound.player, rockRound.computer, countWin);
+                removeDiv();
+                break
+            case 'paper':
+                const paperRound = playRound('paper', getComputerChoice());
+                displayResults(paperRound.result, paperRound.player, paperRound.computer, countWin);
+                removeDiv();
+                break
+            case 'scissors':
+                const scissorRound = playRound('scissors', getComputerChoice());
+                displayResults(scissorRound.result, scissorRound.player, scissorRound.computer, countWin);
+                removeDiv();
+                break
+            default: 
+                return;
+        }
+    })    
+
 }
 
 
-function playGame() {
-    for (let i=0; i < 5; i++ ) {
-        game()
-    }
-}
-
-playGame()
+game()
